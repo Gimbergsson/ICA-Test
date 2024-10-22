@@ -18,5 +18,20 @@ class MainViewModel @Inject constructor(
 
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
+
+        fetchPosts()
+    }
+
+    private fun fetchPosts() {
+        viewModelScope.launch {
+            postsRepository.fetchPosts()
+                .collectAndSetState { posts ->
+                    copy(
+                        posts = posts.filter {
+                            it.id < 50
+                        }
+                    )
+                }
+        }
     }
 }
